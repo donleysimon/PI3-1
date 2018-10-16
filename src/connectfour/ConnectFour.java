@@ -27,7 +27,7 @@ public class ConnectFour extends JFrame {
    public static final int CELL_SIZE = 100; // cell width and height (square)
    public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  // the drawing canvas
    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
-   public static final int GRID_WIDTH = 8;                   // Grid-line's width
+   public static final int GRID_WIDTH = 2;                   // Grid-line's width
    public static final int GRID_WIDHT_HALF = GRID_WIDTH / 2; // Grid-line's half-width
    // Symbols (cross/nought) are displayed inside a cell, with padding from border
    public static final int CELL_PADDING = CELL_SIZE / 6;
@@ -111,12 +111,15 @@ public class ConnectFour extends JFrame {
  
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       pack();  // pack all the components in this JFrame
-      setTitle("Tic Tac Toe");
+      setTitle("Connect4");
       setVisible(true);  // show this JFrame
- 
+      
       board = new Seed[ROWS][COLS]; // allocate array
       initGame(); // initialize the game board contents and game variables
+      
+      
    }
+   
  
    /** Initialize the game-board contents and the status */
    public void initGame() {
@@ -177,7 +180,7 @@ public class ConnectFour extends JFrame {
         }
         // Check diagonal
         count = 0;
-        for (int row = rowSelected, col = colSelected; row < ROWS && col > 0; ++row, --col){
+        for (int row = rowSelected, col = colSelected; row < ROWS && col >= 0; ++row, --col){
             if(board[row][col] == theSeed){
                 ++count;
                 if(count == 4) return true; //found
@@ -224,7 +227,7 @@ public class ConnectFour extends JFrame {
       @Override
       public void paintComponent(Graphics g) {  // invoke via repaint()
          super.paintComponent(g);    // fill background
-         setBackground(Color.WHITE); // set its background color
+         setBackground(Color.BLUE); // set its background color
  
          // Draw the grid-lines
          g.setColor(Color.LIGHT_GRAY);
@@ -248,13 +251,13 @@ public class ConnectFour extends JFrame {
                int y1 = row * CELL_SIZE + CELL_PADDING;
                if (board[row][col] == Seed.CROSS) {
                   g2d.setColor(Color.RED);
-                  int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
-                  int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
-                  g2d.drawLine(x1, y1, x2, y2);
-                  g2d.drawLine(x2, y1, x1, y2);
+                  g2d.fillOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
                } else if (board[row][col] == Seed.NOUGHT) {
-                  g2d.setColor(Color.BLUE);
-                  g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+                  g2d.setColor(Color.YELLOW);
+                  g2d.fillOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+               } else if (board[row][col] == Seed.EMPTY) {
+                  g2d.setColor(Color.WHITE);
+                  g2d.fillOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
                }
             }
          }
@@ -263,19 +266,19 @@ public class ConnectFour extends JFrame {
          if (currentState == GameState.PLAYING) {
             statusBar.setForeground(Color.BLACK);
             if (currentPlayer == Seed.CROSS) {
-               statusBar.setText("X's Turn");
+               statusBar.setText("Red's Turn");
             } else {
-               statusBar.setText("O's Turn");
+               statusBar.setText("Yellow's Turn");
             }
          } else if (currentState == GameState.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again.");
          } else if (currentState == GameState.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click to play again.");
+            statusBar.setText("'Red' Won! Click to play again.");
          } else if (currentState == GameState.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click to play again.");
+            statusBar.setText("'Yellow' Won! Click to play again.");
          }
       }
    }
